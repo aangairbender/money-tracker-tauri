@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+export type Kind = "income" | "expense";
 export type Transaction = {
   id: string;
   summary: string;
   bank: string;
   externalId: string;
   date: Date;
-  kind: "income" | "expense";
+  kind: Kind;
   amount: number;
   categoryId: string;
 };
@@ -15,7 +16,7 @@ export type Category = {
   id: string;
   name: string;
   parentId: string;
-}
+};
 
 // Food -> delivery
 

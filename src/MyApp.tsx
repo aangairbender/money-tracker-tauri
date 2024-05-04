@@ -12,10 +12,22 @@ const router = createBrowserRouter([
     children: [
       {
         path: "transactions",
-        element: <Transactions />
-      }
-    ]
-  }
+        element: <Transactions />,
+      },
+      {
+        path: "dashboard",
+        element: <Transactions />,
+      },
+      {
+        path: "categories",
+        element: <Transactions />,
+      },
+      {
+        path: "import",
+        element: <Transactions />,
+      },
+    ],
+  },
 ]);
 
 const MyApp: React.FC = () => (
@@ -23,11 +35,17 @@ const MyApp: React.FC = () => (
     theme={{
       token: {
         // Seed Token
-        colorPrimary: '#00b96b',
+        colorPrimary: "#00b96b",
         borderRadius: 2,
 
         // Alias Token
-        colorBgContainer: '#f6ffed',
+        colorBgContainer: "#f6ffed",
+      },
+      components: {
+        Layout: {
+          triggerBg: "#358051",
+          triggerColor: "#f6ffff",
+        },
       },
     }}
   >

@@ -1,47 +1,69 @@
-import { Table } from "antd";
+import { CaretDownFilled, CaretUpFilled } from "@ant-design/icons/lib/icons";
+import { Table, Tag } from "antd";
+import { Kind, Transaction } from "src/slices/transactionsSlice";
 
 const columns = [
   {
     title: "Date",
-    dataIndex: "date"
+    dataIndex: "date",
+    width: "100px",
+    render: (date: Date) =>
+      `${date.getFullYear()}/${"0" + date.getMonth().toString().slice(-2)}/${
+        "0" + date.getDay().toString().slice(-2)
+      }`,
   },
   {
     title: "Kind",
-    dataIndex: "kind"
+    dataIndex: "kind",
+    width: "50px",
+    render: (kind: Kind) =>
+      kind === "expense" ? (
+        <CaretDownFilled style={{ color: "red" }} />
+      ) : (
+        <CaretUpFilled style={{ color: "green" }} />
+      ),
   },
   {
     title: "Amount",
-    dataIndex: "amount"
+    dataIndex: "amount",
+    width: "50px",
   },
   {
     title: "Category",
-    dataIndex: "categoryId"
+    dataIndex: "categoryId",
+    width: "100px",
+    render: (category: string) => <Tag color="green">{category}</Tag>,
   },
   {
     title: "Summary",
-    dataIndex: "summary"
+    dataIndex: "summary",
   },
 ];
-
 const Transactions: React.FC = () => {
-  const dataSource = [
+  const dataSource: Transaction[] = [
     {
-      'date': '2023/06/02',
-      'kind': 'expense',
-      'amount': 498,
-      'categoryId': 'food',
-      'summary': 'Uber Eats'
+      id: "1",
+      bank: "Rakuten",
+      externalId: "externalId",
+      date: new Date(),
+      kind: "expense",
+      amount: 498,
+      categoryId: "food",
+      summary: "Uber Eats",
     },
     {
-      'date': '2023/06/01',
-      'kind': 'expense',
-      'amount': 123,
-      'categoryId': 'food',
-      'summary': 'Seijo Ishii'
+      id: "2",
+      bank: "Rakuten",
+      externalId: "externalId",
+      date: new Date(),
+      kind: "expense",
+      amount: 123,
+      categoryId: "food",
+      summary: "Seijo Ishii",
     },
   ];
 
-  return <Table dataSource={dataSource} columns={columns} />;
+  return <Table dataSource={dataSource as any} columns={columns} />;
 };
 
 export default Transactions;
