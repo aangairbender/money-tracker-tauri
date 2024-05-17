@@ -1,8 +1,11 @@
-import { CaretDownFilled, CaretUpFilled } from "@ant-design/icons/lib/icons";
-import { Table, Tag } from "antd";
-import { Kind, Transaction } from "src/slices/transactionsSlice";
+import { CaretDownFilled, CaretUpFilled, DownloadOutlined, UploadOutlined } from "@ant-design/icons/lib/icons";
+import { Transaction, TransactionKind } from "@models";
+import { Button, Card, Flex, Space, Table, Tag, Typography } from "antd";
+import { ColumnType } from "antd/es/table";
 
-const columns = [
+const { Text } = Typography;
+
+const columns: ColumnType<Transaction>[] = [
   {
     title: "Date",
     dataIndex: "date",
@@ -13,20 +16,8 @@ const columns = [
       }`,
   },
   {
-    title: "Kind",
-    dataIndex: "kind",
-    width: "50px",
-    render: (kind: Kind) =>
-      kind === "expense" ? (
-        <CaretDownFilled style={{ color: "red" }} />
-      ) : (
-        <CaretUpFilled style={{ color: "green" }} />
-      ),
-  },
-  {
-    title: "Amount",
-    dataIndex: "amount",
-    width: "50px",
+    title: "Summary",
+    dataIndex: "summary",
   },
   {
     title: "Category",
@@ -35,14 +26,19 @@ const columns = [
     render: (category: string) => <Tag color="green">{category}</Tag>,
   },
   {
-    title: "Summary",
-    dataIndex: "summary",
+    title: "Amount",
+    dataIndex: "amount",
+    width: "50px",
+    align: 'right',
+    render: (amount: number, item: Transaction) => {
+      const type = item.kind === 'expense' ? 'danger' : 'success';
+      return <Text type={type} strong>¥{amount}</Text>;
+    },
   },
 ];
 const Transactions: React.FC = () => {
   const dataSource: Transaction[] = [
     {
-      id: "1",
       bank: "Rakuten",
       externalId: "externalId",
       date: new Date(),
@@ -52,7 +48,6 @@ const Transactions: React.FC = () => {
       summary: "Uber Eats",
     },
     {
-      id: "2",
       bank: "Rakuten",
       externalId: "externalId",
       date: new Date(),
@@ -63,7 +58,21 @@ const Transactions: React.FC = () => {
     },
   ];
 
-  return <Table dataSource={dataSource as any} columns={columns} />;
+  return (
+    <Flex gap="middle" vertical>
+      <Card bordered={false}>
+        <Button type="primary" icon={<DownloadOutlined/>}>
+          Import
+        </Button>
+      </Card>
+      <Card bordered={false}>
+        <Table
+          size={'small'}
+          dataSource={dataSource}
+          columns={columns} />
+      </Card>
+    </Flex>
+  );
 };
 
 export default Transactions;

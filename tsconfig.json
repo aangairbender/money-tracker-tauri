@@ -23,7 +23,9 @@
     /* path aliases */
     "baseUrl": ".",
     "paths": {
-      "@routes/*": ["src/routes/*"]
+      "@routes/*": ["src/routes/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@models": ["src/models/index"],
     },
 
     /* types */
