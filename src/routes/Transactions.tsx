@@ -39,6 +39,7 @@ const columns: ColumnType<Transaction>[] = [
 const Transactions: React.FC = () => {
   const dataSource: Transaction[] = [
     {
+      id: "id1",
       bank: "Rakuten",
       externalId: "externalId",
       date: new Date(),
@@ -48,6 +49,7 @@ const Transactions: React.FC = () => {
       summary: "Uber Eats",
     },
     {
+      id: "id2",
       bank: "Rakuten",
       externalId: "externalId",
       date: new Date(),
