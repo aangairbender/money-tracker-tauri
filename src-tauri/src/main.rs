@@ -4,13 +4,13 @@
 use std::fs;
 
 use anyhow::bail;
-use chrono::{DateTime, Utc};
+use chrono::NaiveDate;
 use csv::StringRecord;
 use serde::Serialize;
 
 mod banks;
 
-#[derive(Serialize)]
+#[derive(Serialize, PartialEq, Eq, Debug)]
 #[serde(rename_all = "snake_case")]
 enum Bank {
     Rakuten,
@@ -31,8 +31,8 @@ struct Transaction {
     summary: String,
     bank: Bank,
     external_id: String,
-    date: DateTime<Utc>,
-    amount: i64, 
+    date: NaiveDate,
+    amount: i64,
 }
 
 #[derive(Serialize)]
@@ -46,18 +46,22 @@ struct LoadCsvResult {
 fn load_csv_raw(path: &str) -> anyhow::Result<(Bank, Vec<Transaction>)> {
     let file = fs::read(path).unwrap();
     let (res, _, _) = encoding_rs::SHIFT_JIS.decode(&file);
-    let mut reader = csv::Reader::from_reader(res.as_bytes());
+    let file_bytes = res.as_bytes();
+    let mut reader = csv::Reader::from_reader(file_bytes);
 
     let Some(bank) = ({
         let headers = reader.headers()?;
-        Bank::detect_from_headers(&headers)
+        Bank::detect_from_headers(headers)
     }) else {
         bail!("Cannot detect bank");
     };
 
-    let mut res = Vec::new();
-    res.extend(banks::mufg::parse_records(&mut reader).into_iter());
-    
+    let res = match bank {
+        Bank::Rakuten => todo!(),
+        Bank::Mufg => banks::mufg::parse_records(file_bytes),
+        Bank::Smbc => todo!(),
+    };
+
     Ok((bank, res))
 }
 
