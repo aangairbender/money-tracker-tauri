@@ -1,7 +1,9 @@
-import { CaretDownFilled, CaretUpFilled, DownloadOutlined, UploadOutlined } from "@ant-design/icons/lib/icons";
-import { Transaction, TransactionKind } from "@models";
-import { Button, Card, Flex, Space, Table, Tag, Typography } from "antd";
+import { DownloadOutlined } from "@ant-design/icons/lib/icons";
+import { Transaction } from "@models";
+import { Button, Card, Flex, Table, Tag, Typography } from "antd";
 import { ColumnType } from "antd/es/table";
+import { open } from '@tauri-apps/api/dialog';
+import { useAppState } from "@hooks/useAppState";
 
 const { Text } = Typography;
 
@@ -10,68 +12,65 @@ const columns: ColumnType<Transaction>[] = [
     title: "Date",
     dataIndex: "date",
     width: "100px",
-    render: (date: Date) =>
-      `${date.getFullYear()}/${"0" + date.getMonth().toString().slice(-2)}/${
-        "0" + date.getDay().toString().slice(-2)
-      }`,
+    render: (strDate: string) => new Date(strDate).toISOString().split('T')[0],
   },
   {
     title: "Summary",
     dataIndex: "summary",
+    width: "300px",
   },
   {
     title: "Category",
     dataIndex: "categoryId",
-    width: "100px",
     render: (category: string) => <Tag color="green">{category}</Tag>,
   },
   {
     title: "Amount",
     dataIndex: "amount",
-    width: "50px",
+    width: "150px",
     align: 'right',
-    render: (amount: number, item: Transaction) => {
-      const type = item.kind === 'expense' ? 'danger' : 'success';
-      return <Text type={type} strong>¥{amount}</Text>;
+    render: (amount: number, _item: Transaction) => {
+      const type = amount < 0 ? 'danger' : 'success';
+      return <Text type={type} strong>¥{Math.abs(amount)}</Text>;
     },
   },
 ];
+
 const Transactions: React.FC = () => {
-  const dataSource: Transaction[] = [
-    {
-      id: "id1",
-      bank: "Rakuten",
-      externalId: "externalId",
-      date: new Date(),
-      kind: "expense",
-      amount: 498,
-      categoryId: "food",
-      summary: "Uber Eats",
-    },
-    {
-      id: "id2",
-      bank: "Rakuten",
-      externalId: "externalId",
-      date: new Date(),
-      kind: "expense",
-      amount: 123,
-      categoryId: "food",
-      summary: "Seijo Ishii",
-    },
-  ];
+  const { transactions, importCsv } = useAppState();
+
+  const importClicked = async () => {
+    const selected = await open({
+      multiple: true,
+      filters: [{
+        name: 'Bank receipts',
+        extensions: ['csv']
+      }]
+    });
+
+    if (Array.isArray(selected)) {
+      selected.forEach(async (s) => await importCsv(s));
+    } else if (selected === null) {
+      // user cancelled the selection
+    } else {
+      await importCsv(selected);
+    }
+  };
 
   return (
     <Flex gap="middle" vertical>
       <Card bordered={false}>
-        <Button type="primary" icon={<DownloadOutlined/>}>
+        <Button type="primary" icon={<DownloadOutlined/>} onClick={importClicked}>
           Import
         </Button>
       </Card>
-      <Card bordered={false}>
+      <Card bordered={false} style={{flex: 1}}>
         <Table
           size={'small'}
-          dataSource={dataSource}
-          columns={columns} />
+          dataSource={transactions}
+          columns={columns}
+          scroll={{y: 400}}
+          rowKey={t => t.externalId}/>
       </Card>
     </Flex>
   );

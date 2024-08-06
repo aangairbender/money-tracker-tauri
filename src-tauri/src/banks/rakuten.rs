@@ -49,7 +49,7 @@ pub fn parse_records(content: &[u8]) -> Vec<Transaction> {
 
     let mut res = Vec::new();
     for result in reader.deserialize::<CsvRow>() {
-        let record = result.unwrap();
+        let Ok(record) = result else { continue };
         res.push(record.into());
     }
     res

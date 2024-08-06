@@ -15,13 +15,20 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "dialog": {
+        "all": true
+      },
+      "fs": {
+        "scope": ["$APPLOCALDATA/*"],
+        "all": true
       }
     },
     "windows": [
       {
         "title": "money-tracker",
-        "width": 800,
-        "height": 600
+        "width": 1200,
+        "height": 800
       }
     ],
     "security": {

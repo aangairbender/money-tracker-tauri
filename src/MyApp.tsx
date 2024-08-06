@@ -1,4 +1,4 @@
-import { App, ConfigProvider } from "antd";
+import { App, ConfigProvider, theme } from "antd";
 import "./MyApp.css";
 import React from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
@@ -31,6 +31,7 @@ const router = createBrowserRouter([
 const MyApp: React.FC = () => (
   <ConfigProvider
     theme={{
+      algorithm: theme.darkAlgorithm,
       // token: {
       //   // Seed Token
       //   colorPrimary: "#00b96b",
@@ -45,7 +46,7 @@ const MyApp: React.FC = () => (
           triggerColor: "#f6ffff",
         },
         Menu: {
-          itemBg: "#f5f5f5"
+          // itemBg: "#f5f5f5"
         }
       },
     }}

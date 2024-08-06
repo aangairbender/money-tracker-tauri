@@ -3,9 +3,7 @@
 
 use std::fs;
 
-use anyhow::bail;
 use chrono::NaiveDate;
-use csv::StringRecord;
 use serde::Serialize;
 
 mod banks;
@@ -18,17 +16,8 @@ enum Bank {
     Smbc,
 }
 
-impl Bank {
-    fn detect_from_headers(headers: &StringRecord) -> Option<Bank> {
-        if &headers[2] == "摘要内容" { return Some(Bank::Mufg) }
-        if &headers[2] == "ご利用金額（円）" { return Some(Bank::Rakuten) }
-        if &headers[2] == "お預入れ" { return Some(Bank::Smbc) }
-
-        None
-    }
-}
-
 #[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
 struct Transaction {
     summary: String,
     bank: Bank,
@@ -42,45 +31,31 @@ struct LoadCsvResult {
     success: bool,
     transactions: Vec<Transaction>,
     error: String,
-    bank: String,
 }
 
-fn load_csv_raw(path: &str) -> anyhow::Result<(Bank, Vec<Transaction>)> {
-    let file = fs::read(path).unwrap();
-    let (res, _, _) = encoding_rs::SHIFT_JIS.decode(&file);
-    let file_bytes = res.as_bytes();
-    let mut reader = csv::Reader::from_reader(file_bytes);
+fn load_csv_raw(path: &str) -> anyhow::Result<Vec<Transaction>> {
+    let bytes = fs::read(path).unwrap();
 
-    let Some(bank) = ({
-        let headers = reader.headers()?;
-        Bank::detect_from_headers(headers)
-    }) else {
-        bail!("Cannot detect bank");
-    };
+    let mut res = Vec::new();
+    res.append(&mut banks::rakuten::parse_records(&bytes));
+    res.append(&mut banks::mufg::parse_records(&bytes));
+    res.append(&mut banks::smbc::parse_records(&bytes));
 
-    let res = match bank {
-        Bank::Rakuten => banks::rakuten::parse_records(file_bytes),
-        Bank::Mufg => banks::mufg::parse_records(file_bytes),
-        Bank::Smbc => banks::smbc::parse_records(file_bytes),
-    };
-
-    Ok((bank, res))
+    Ok(res)
 }
 
 #[tauri::command]
 fn load_csv(path: String) -> LoadCsvResult {
     match load_csv_raw(&path) {
-        anyhow::Result::Ok((bank, res)) => LoadCsvResult {
+        anyhow::Result::Ok(res) => LoadCsvResult {
             success: true,
             transactions: res,
             error: "".into(),
-            bank: serde_json::to_string(&bank).unwrap()
         },
         anyhow::Result::Err(e) => LoadCsvResult {
             success: false,
             transactions: Vec::new(),
             error: e.to_string(),
-            bank: "".into(),
         }
     }
 }

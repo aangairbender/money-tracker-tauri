@@ -1,48 +1,69 @@
 import { useEffect, useState } from "react";
 import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import { Category, Transaction } from "@models";
+import { invoke } from '@tauri-apps/api/tauri'
 
-// const uniqueTransactions = action.payload.filter(item => 
-//   !state.some(t => t.bank === item.bank && t.externalId === item.externalId)
-// );
-// state.push(...uniqueTransactions);
+interface AppState {
+  transactions: Transaction[],
+  categories: Category[],
+}
 
+interface LoadCsvResult {
+  success: boolean;
+  transactions: Transaction[];
+  error: string;
+}
+
+const uniqueOnly = (items: Transaction[]): Transaction[] => {
+  const idMap = new Map<string, Transaction>();
+  items.forEach(t => idMap.set(t.externalId, t));
+  return [...idMap.values()];
+}
 
 export const useAppState = () => {
+  const [firstTime, setFirstTime] = useState(true);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
 
   async function loadStateFromDisk() {
     try {
       const content = await readTextFile("data.json", { dir: BaseDirectory.AppLocalData });
-      const json = JSON.parse(content);
-      setTransactions(json['transactions']);
-      setCategories(json['categories']);
+      const state: AppState = JSON.parse(content);
+      setTransactions(state.transactions);
+      setCategories(state.categories);
     } catch (e) {
-      console.warn(e);
+      console.log(e);
     }
   }
 
-  async function saveStateToDisk() {
-    try {
-      const json = {
-        'transactions': transactions,
-        'categories': categories,
-      };
-      const content = JSON.stringify(json);
-      await writeTextFile("data.json", content, { dir: BaseDirectory.AppLocalData });
-    } catch (e) {
-      console.warn(e);
+  useEffect(() => {
+    async function save() {
+      try {
+        const state: AppState = { transactions, categories };
+        const content = JSON.stringify(state);
+        await writeTextFile("data.json", content, { dir: BaseDirectory.AppLocalData });
+      } catch (e) {
+        alert(e);
+      }
     }
-  }
+    if (!firstTime) {
+      save();
+    }
+  }, [transactions, categories]);
 
-  async function importCsv(csvPath: string) {
-
+  async function importCsv(path: string) {
+    const result: LoadCsvResult = await invoke("load_csv", { path });
+    if (result.success) {
+      setTransactions(uniqueOnly([...transactions, ...result.transactions]));
+    } else {
+      alert(result.error);
+    }
   }
 
   // loading initial state
   useEffect(() => {
     loadStateFromDisk();
+    setFirstTime(false);
   }, []);
 
   return { transactions, categories, importCsv };

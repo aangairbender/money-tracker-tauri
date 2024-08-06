@@ -1,18 +1,15 @@
+export type Bank = "rakuten" | "mufg" | "smbc";
+
 export type Transaction = {
-  id: string;
   summary: string;
-  bank: string;
+  bank: Bank;
   externalId: string;
-  date: Date;
-  kind: TransactionKind;
+  date: string;
   amount: number;
-  categoryId: string;
 };
 
 export type Category = {
   id: string;
   name: string;
-  parentId?: string;
+  substrings: string[];
 };
-
-export type TransactionKind = "income" | "expense";

@@ -11,7 +11,11 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.1",
+    "@headlessui/react": "^2.1.2",
+    "@headlessui/tailwindcss": "^0.2.1",
+    "@remixicon/react": "^4.2.0",
     "@tauri-apps/api": "^1",
+    "@tremor/react": "^3.17.4",
     "antd": "^5.15.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
@@ -22,12 +26,16 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
     "@tauri-apps/cli": "^1",
     "@types/node": "^20.12.8",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@types/uuid": "^9.0.8",
     "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.7",
     "typescript": "^5.0.2",
     "vite": "^5.0.0",
     "vite-tsconfig-paths": "^4.3.2"
