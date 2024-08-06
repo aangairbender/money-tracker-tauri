@@ -93,7 +93,6 @@ mod test {
         assert_eq!(transactions[1].external_id, "15578503009000807000769");
         assert_eq!(transactions[2].external_id, "15208003010401280101304");
 
-        
         // amount
         assert_eq!(transactions[0].amount, -3649);
         assert_eq!(transactions[1].amount, -1391);

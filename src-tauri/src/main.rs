@@ -22,6 +22,7 @@ impl Bank {
     fn detect_from_headers(headers: &StringRecord) -> Option<Bank> {
         if &headers[2] == "摘要内容" { return Some(Bank::Mufg) }
         if &headers[2] == "ご利用金額（円）" { return Some(Bank::Rakuten) }
+        if &headers[2] == "お預入れ" { return Some(Bank::Smbc) }
 
         None
     }
@@ -60,7 +61,7 @@ fn load_csv_raw(path: &str) -> anyhow::Result<(Bank, Vec<Transaction>)> {
     let res = match bank {
         Bank::Rakuten => banks::rakuten::parse_records(file_bytes),
         Bank::Mufg => banks::mufg::parse_records(file_bytes),
-        Bank::Smbc => todo!(),
+        Bank::Smbc => banks::smbc::parse_records(file_bytes),
     };
 
     Ok((bank, res))
