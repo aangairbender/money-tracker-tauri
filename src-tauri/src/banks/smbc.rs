@@ -17,9 +17,9 @@ struct CsvRow {
     #[serde(rename = "残高")]
     balance: String,
     #[serde(rename = "メモ")]
-    memo: String,
+    _memo: String,
     #[serde(rename = "ラベル")]
-    label: String,
+    _label: String,
 }
 
 impl From<CsvRow> for Transaction {
