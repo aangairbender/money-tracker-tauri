@@ -1,10 +1,10 @@
-use chrono::{DateTime, NaiveDate};
+use chrono::NaiveDate;
 use serde::Deserialize;
 
 use crate::Transaction;
 
 #[derive(Debug, Deserialize)]
-pub struct CsvRow {
+struct CsvRow {
     #[serde(rename = "日付")]
     date: String,
     #[serde(rename = "摘要")]
