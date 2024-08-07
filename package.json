@@ -10,6 +10,7 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@ant-design/charts": "^2.1.2",
     "@ant-design/icons": "^5.3.1",
     "@headlessui/react": "^2.1.2",
     "@headlessui/tailwindcss": "^0.2.1",
@@ -17,9 +18,12 @@
     "@tauri-apps/api": "^1",
     "@tremor/react": "^3.17.4",
     "antd": "^5.15.0",
+    "chart.js": "^4.4.3",
+    "dayjs": "^1.11.12",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.0",
     "sort-by": "^1.2.0",

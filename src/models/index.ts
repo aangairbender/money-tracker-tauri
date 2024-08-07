@@ -11,5 +11,6 @@ export type Transaction = {
 export type Category = {
   id: string;
   name: string;
+  color: string;
   substrings: string[];
 };

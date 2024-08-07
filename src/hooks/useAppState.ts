@@ -54,10 +54,18 @@ export const useAppState = () => {
   async function importCsv(path: string) {
     const result: LoadCsvResult = await invoke("load_csv", { path });
     if (result.success) {
-      setTransactions(uniqueOnly([...transactions, ...result.transactions]));
+      setTransactions(t => uniqueOnly([...t, ...result.transactions]));
     } else {
       alert(result.error);
     }
+  }
+
+  function upsertCategory(category: Category) {
+    setCategories(c => c.filter(item => item.id != category.id).concat([category]));
+  }
+
+  function deleteCategory(category: Category) {
+    setCategories(c => c.filter(item => item.id != category.id));
   }
 
   // loading initial state
@@ -66,5 +74,5 @@ export const useAppState = () => {
     setFirstTime(false);
   }, []);
 
-  return { transactions, categories, importCsv };
+  return { transactions, categories, importCsv, upsertCategory, deleteCategory };
 };

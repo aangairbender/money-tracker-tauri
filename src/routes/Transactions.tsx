@@ -7,37 +7,43 @@ import { useAppState } from "@hooks/useAppState";
 
 const { Text } = Typography;
 
-const columns: ColumnType<Transaction>[] = [
-  {
-    title: "Date",
-    dataIndex: "date",
-    width: "100px",
-    render: (strDate: string) => new Date(strDate).toISOString().split('T')[0],
-  },
-  {
-    title: "Summary",
-    dataIndex: "summary",
-    width: "300px",
-  },
-  {
-    title: "Category",
-    dataIndex: "categoryId",
-    render: (category: string) => <Tag color="green">{category}</Tag>,
-  },
-  {
-    title: "Amount",
-    dataIndex: "amount",
-    width: "150px",
-    align: 'right',
-    render: (amount: number, _item: Transaction) => {
-      const type = amount < 0 ? 'danger' : 'success';
-      return <Text type={type} strong>¥{Math.abs(amount)}</Text>;
-    },
-  },
-];
-
 const Transactions: React.FC = () => {
-  const { transactions, importCsv } = useAppState();
+  const { transactions, categories, importCsv } = useAppState();
+
+  const columns: ColumnType<Transaction>[] = [
+    {
+      title: "Date",
+      dataIndex: "date",
+      width: "100px",
+      render: (strDate: string) => new Date(strDate).toISOString().split('T')[0],
+    },
+    {
+      title: "Summary",
+      dataIndex: "summary",
+      width: "300px",
+    },
+    {
+      title: "Category",
+      dataIndex: "summary",
+      render: (summary: string) => {
+        const category = categories.find(c => c.substrings.some(sub => summary.includes(sub)));
+        if (category)
+          return (<Tag color={category.color}>{category.name}</Tag>);
+        else
+          return (<></>);
+      },
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      width: "150px",
+      align: 'right',
+      render: (amount: number, _item: Transaction) => {
+        const type = amount < 0 ? 'danger' : 'success';
+        return <Text type={type} strong>¥{Math.abs(amount)}</Text>;
+      },
+    },
+  ];
 
   const importClicked = async () => {
     const selected = await open({
