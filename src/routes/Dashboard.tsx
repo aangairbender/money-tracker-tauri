@@ -103,7 +103,7 @@ const Dashboard: React.FC = () => {
                         <DatePicker.RangePicker
                             picker="month"
                             value={[date.from, date.to]}
-                            onChange={date => setDate({from: date[0], to: date[1]})}/>
+                            onChange={date => setDate(date ? {from: date[0], to: date[1]} : {from:null, to:null})}/>
                         <CategoryPie {...date}/>
                     </Card>
                 </Col>
