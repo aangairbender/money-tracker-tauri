@@ -1,7 +1,16 @@
-# Tauri + React + Typescript
+# Money tracker
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+A tool to track your expenses.
 
-## Recommended IDE Setup
+## How to use
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+Download `.csv` receipts from your bank and import them to this application.
+
+Currently supported banks (Japan only):
+- Rakuten Bank
+- MUFG
+- SMBC
+
+## Tech stack
+
+The app is built using Tauri framework (Rust + React)
