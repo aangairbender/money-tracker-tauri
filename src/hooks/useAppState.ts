@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
+import { BaseDirectory, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { Category, Transaction } from "@models";
-import { invoke } from '@tauri-apps/api/tauri'
+import { invoke } from '@tauri-apps/api/core'
 
 interface AppState {
   transactions: Transaction[],
@@ -27,7 +27,7 @@ export const useAppState = () => {
 
   async function loadStateFromDisk() {
     try {
-      const content = await readTextFile("data.json", { dir: BaseDirectory.AppLocalData });
+      const content = await readTextFile("data.json", { baseDir: BaseDirectory.AppLocalData });
       const state: AppState = JSON.parse(content);
       setTransactions(state.transactions);
       setCategories(state.categories);
@@ -41,7 +41,7 @@ export const useAppState = () => {
       try {
         const state: AppState = { transactions, categories };
         const content = JSON.stringify(state);
-        await writeTextFile("data.json", content, { dir: BaseDirectory.AppLocalData });
+        await writeTextFile("data.json", content, { baseDir: BaseDirectory.AppLocalData });
       } catch (e) {
         alert(e);
       }

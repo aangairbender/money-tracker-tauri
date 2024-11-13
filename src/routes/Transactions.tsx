@@ -2,12 +2,12 @@ import { DownloadOutlined } from "@ant-design/icons/lib/icons";
 import { Transaction } from "@models";
 import { Button, Card, Flex, Table, Tag, Typography } from "antd";
 import { ColumnType } from "antd/es/table";
-import { open } from '@tauri-apps/api/dialog';
-import { useAppState } from "@hooks/useAppState";
+import { open } from '@tauri-apps/plugin-dialog';
+import { useAppState } from "@hooks";
 
 const { Text } = Typography;
 
-const Transactions: React.FC = () => {
+export const Transactions: React.FC = () => {
   const { transactions, categories, importCsv } = useAppState();
 
   const columns: ColumnType<Transaction>[] = [
@@ -81,5 +81,3 @@ const Transactions: React.FC = () => {
     </Flex>
   );
 };
-
-export default Transactions;

@@ -23,9 +23,11 @@
     /* path aliases */
     "baseUrl": ".",
     "paths": {
-      "@routes/*": ["src/routes/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@models": ["src/models/index"],
+      "@routes": ["src/routes/index.ts"],
+      "@hooks": ["src/hooks/index.ts"],
+      "@models": ["src/models/index.ts"],
+      "@lib": ["src/lib/index.ts"],
+      "@components": ["src/components/index.ts"],
     },
 
     /* types */

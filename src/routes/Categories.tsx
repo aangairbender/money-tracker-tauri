@@ -1,12 +1,12 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { useAppState } from "@hooks/useAppState";
+import { useAppState } from "@hooks";
 import { Category } from "@models";
 import { Avatar, Button, Card, ColorPicker, Flex, Input, List, Modal, Popconfirm, PopconfirmProps } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import { useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 
-const Categories: React.FC = () => {
+export const Categories: React.FC = () => {
   const { categories, upsertCategory, deleteCategory } = useAppState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editedCategory, setEditedCategory] = useState<Category | null>(null);
@@ -87,5 +87,3 @@ const Categories: React.FC = () => {
     </Flex>
   );
 };
-
-export default Categories;

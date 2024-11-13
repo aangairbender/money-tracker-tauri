@@ -27,7 +27,7 @@ const items = [
   },
 ];
 
-const Root: React.FC = () => {
+export const Root: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -58,5 +58,3 @@ const Root: React.FC = () => {
     </Layout>
   );
 };
-
-export default Root;

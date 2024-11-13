@@ -3,7 +3,6 @@ use serde::Deserialize;
 
 use crate::{Bank, Transaction};
 
-
 #[derive(Debug, Deserialize)]
 struct CsvRow {
     #[serde(rename = "ご利用日")]
@@ -44,8 +43,7 @@ impl From<CsvRow> for Transaction {
 
 pub fn parse_records(content: &[u8]) -> Vec<Transaction> {
     let (res, _, _) = encoding_rs::SHIFT_JIS.decode(content);
-    let mut reader = csv::ReaderBuilder::new()
-        .from_reader(res.as_bytes());
+    let mut reader = csv::ReaderBuilder::new().from_reader(res.as_bytes());
 
     let mut res = Vec::new();
     for result in reader.deserialize::<CsvRow>() {
@@ -72,11 +70,20 @@ mod test {
         let (encoded, _, _) = encoding_rs::SHIFT_JIS.encode(CONTENT);
         let transactions = parse_records(&encoded);
         assert_eq!(transactions.len(), 3);
-        
+
         // dates
-        assert_eq!(transactions[0].date, NaiveDate::from_ymd_opt(2023, 1, 5).unwrap());
-        assert_eq!(transactions[1].date, NaiveDate::from_ymd_opt(2023, 1, 9).unwrap());
-        assert_eq!(transactions[2].date, NaiveDate::from_ymd_opt(2023, 1, 9).unwrap());
+        assert_eq!(
+            transactions[0].date,
+            NaiveDate::from_ymd_opt(2023, 1, 5).unwrap()
+        );
+        assert_eq!(
+            transactions[1].date,
+            NaiveDate::from_ymd_opt(2023, 1, 9).unwrap()
+        );
+        assert_eq!(
+            transactions[2].date,
+            NaiveDate::from_ymd_opt(2023, 1, 9).unwrap()
+        );
 
         // bank
         assert_eq!(transactions[0].bank, Bank::Rakuten);

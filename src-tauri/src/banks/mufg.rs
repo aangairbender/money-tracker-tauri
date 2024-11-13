@@ -37,8 +37,7 @@ impl From<CsvRow> for Transaction {
 
 pub fn parse_records(content: &[u8]) -> Vec<Transaction> {
     let (res, _, _) = encoding_rs::SHIFT_JIS.decode(content);
-    let mut reader = csv::ReaderBuilder::new()
-        .from_reader(res.as_bytes());
+    let mut reader = csv::ReaderBuilder::new().from_reader(res.as_bytes());
 
     let mut res = Vec::new();
     for result in reader.deserialize::<CsvRow>() {
@@ -65,11 +64,20 @@ mod test {
         let (encoded, _, _) = encoding_rs::SHIFT_JIS.encode(CONTENT);
         let transactions = parse_records(&encoded);
         assert_eq!(transactions.len(), 3);
-        
+
         // dates
-        assert_eq!(transactions[0].date, NaiveDate::from_ymd_opt(2023, 6, 2).unwrap());
-        assert_eq!(transactions[1].date, NaiveDate::from_ymd_opt(2023, 6, 2).unwrap());
-        assert_eq!(transactions[2].date, NaiveDate::from_ymd_opt(2023, 6, 3).unwrap());
+        assert_eq!(
+            transactions[0].date,
+            NaiveDate::from_ymd_opt(2023, 6, 2).unwrap()
+        );
+        assert_eq!(
+            transactions[1].date,
+            NaiveDate::from_ymd_opt(2023, 6, 2).unwrap()
+        );
+        assert_eq!(
+            transactions[2].date,
+            NaiveDate::from_ymd_opt(2023, 6, 3).unwrap()
+        );
 
         // bank
         assert_eq!(transactions[0].bank, Bank::Mufg);
@@ -82,9 +90,18 @@ mod test {
         assert_eq!(transactions[2].summary, "８２４７５５　ＦＵＴＡＫＯＴＡ");
 
         // external_id
-        assert_eq!(transactions[0].external_id, "2023/6/2 - ４９６４０６　ＵＢＥＲ　＊　Ｅ");
-        assert_eq!(transactions[1].external_id, "2023/6/2 - ５２７３０７　ＴＥＰＣＯ");
-        assert_eq!(transactions[2].external_id, "2023/6/3 - ８２４７５５　ＦＵＴＡＫＯＴＡ");
+        assert_eq!(
+            transactions[0].external_id,
+            "2023/6/2 - ４９６４０６　ＵＢＥＲ　＊　Ｅ"
+        );
+        assert_eq!(
+            transactions[1].external_id,
+            "2023/6/2 - ５２７３０７　ＴＥＰＣＯ"
+        );
+        assert_eq!(
+            transactions[2].external_id,
+            "2023/6/3 - ８２４７５５　ＦＵＴＡＫＯＴＡ"
+        );
 
         // amount
         assert_eq!(transactions[0].amount, -3960);

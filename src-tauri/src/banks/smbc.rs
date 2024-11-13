@@ -3,7 +3,6 @@ use serde::Deserialize;
 
 use crate::{Bank, Transaction};
 
-
 #[derive(Debug, Deserialize)]
 struct CsvRow {
     #[serde(rename = "年月日")]
@@ -30,15 +29,14 @@ impl From<CsvRow> for Transaction {
             bank: Bank::Smbc,
             external_id,
             date: NaiveDate::parse_from_str(&value.date, "%Y/%-m/%-d").unwrap(),
-            amount: value.deposit.parse().unwrap_or(0) - value.withdrawal.parse().unwrap_or(0)
+            amount: value.deposit.parse().unwrap_or(0) - value.withdrawal.parse().unwrap_or(0),
         }
     }
 }
 
 pub fn parse_records(content: &[u8]) -> Vec<Transaction> {
     let (res, _, _) = encoding_rs::SHIFT_JIS.decode(content);
-    let mut reader = csv::ReaderBuilder::new()
-        .from_reader(res.as_bytes());
+    let mut reader = csv::ReaderBuilder::new().from_reader(res.as_bytes());
 
     let mut res = Vec::new();
     for result in reader.deserialize::<CsvRow>() {
@@ -47,7 +45,6 @@ pub fn parse_records(content: &[u8]) -> Vec<Transaction> {
     }
     res
 }
-
 
 #[cfg(test)]
 mod test {
@@ -66,11 +63,20 @@ mod test {
         let (encoded, _, _) = encoding_rs::SHIFT_JIS.encode(CONTENT);
         let transactions = parse_records(&encoded);
         assert_eq!(transactions.len(), 3);
-        
+
         // dates
-        assert_eq!(transactions[0].date, NaiveDate::from_ymd_opt(2024, 7, 6).unwrap());
-        assert_eq!(transactions[1].date, NaiveDate::from_ymd_opt(2024, 7, 4).unwrap());
-        assert_eq!(transactions[2].date, NaiveDate::from_ymd_opt(2024, 6, 29).unwrap());
+        assert_eq!(
+            transactions[0].date,
+            NaiveDate::from_ymd_opt(2024, 7, 6).unwrap()
+        );
+        assert_eq!(
+            transactions[1].date,
+            NaiveDate::from_ymd_opt(2024, 7, 4).unwrap()
+        );
+        assert_eq!(
+            transactions[2].date,
+            NaiveDate::from_ymd_opt(2024, 6, 29).unwrap()
+        );
 
         // bank
         assert_eq!(transactions[0].bank, Bank::Smbc);
@@ -85,8 +91,11 @@ mod test {
         // external_id
         assert_eq!(transactions[0].external_id, "2024/7/6 - Vｻｶﾞｸ617812 - 9293");
         assert_eq!(transactions[1].external_id, "2024/7/4 - V617812 - 9275");
-        assert_eq!(transactions[2].external_id, "2024/6/29 - Vｻｶﾞｸ105376 - 17471");
-        
+        assert_eq!(
+            transactions[2].external_id,
+            "2024/6/29 - Vｻｶﾞｸ105376 - 17471"
+        );
+
         // amount
         assert_eq!(transactions[0].amount, 18);
         assert_eq!(transactions[1].amount, -8196);

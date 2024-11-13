@@ -1,11 +1,11 @@
-import { useAppState } from "@hooks/useAppState";
-import { BarChart } from "@tremor/react";
+import { useAppState } from "@hooks";
 import { Card, Col, DatePicker, Row, Space } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { Doughnut } from 'react-chartjs-2';
 import 'chart.js/auto';
 import Chart from "chart.js/auto";
+import { BarChart } from "@components";
 
 const months = ["Jan.", "Feb.", "Mar.", "Apr.", "May", "Jun.", "Jul.", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
 
@@ -40,8 +40,8 @@ const YearExpenses: React.FC<YearExpensesProps> = (props) => {
             data={chartData}
             index="month"
             categories={['expense', 'income']}
-            colors={['red', 'green']}
-            yAxisWidth={16}
+            colors={['amber', 'lime']}
+            yAxisWidth={75}
         />
     );
 };
@@ -80,7 +80,7 @@ const CategoryPie: React.FC<CategoryPieProps> = (props: CategoryPieProps) => {
     return (<Doughnut data={pieData}/>);
 };
 
-const Dashboard: React.FC = () => {
+export const Dashboard: React.FC = () => {
     const [date, setDate] = useState<CategoryPieProps>({from: dayjs(), to: dayjs()});
 
     return (
@@ -111,5 +111,3 @@ const Dashboard: React.FC = () => {
         </Space>
     )
 };
-
-export default Dashboard;
